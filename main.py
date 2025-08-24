@@ -1,4 +1,4 @@
-import os
+import os, sys
 import time
 import logging
 from datetime import datetime
@@ -6,6 +6,15 @@ from datetime import datetime
 import tweepy
 import schedule
 from dotenv import load_dotenv
+
+
+def is_dev():
+    """
+    Checks if the bot is running in dev mode or not.
+    """
+    if len(sys.argv) > 1 and sys.argv[1] == 'dev':
+        return True
+    return False
 
 ##
 ## Load environment variables
@@ -27,12 +36,18 @@ logger = logging.getLogger(__name__)
 class AmpyJr:
     def __init__(self):
         """Initialize the simple Twitter bot using Tweepy v2 client."""
-        self.api_key = os.getenv('TWITTER_API_KEY')
-        self.api_secret = os.getenv('TWITTER_API_SECRET')
-        self.access_token = os.getenv('TWITTER_ACCESS_TOKEN')
-        self.access_token_secret = os.getenv('TWITTER_ACCESS_TOKEN_SECRET')
-        
-        self.bot_name = os.getenv('BOT_NAME', 'Ampy Jr.')
+        if is_dev():
+            self.api_key = os.getenv('DEV_TWITTER_API_KEY')
+            self.api_secret = os.getenv('DEV_TWITTER_API_SECRET')
+            self.access_token = os.getenv('DEV_TWITTER_ACCESS_TOKEN')
+            self.access_token_secret = os.getenv('DEV_TWITTER_ACCESS_TOKEN_SECRET')
+            self.bot_name = os.getenv('BOT_NAME', 'Ampy Jr. Dev')
+        else:
+            self.api_key = os.getenv('TWITTER_API_KEY')
+            self.api_secret = os.getenv('TWITTER_API_SECRET')
+            self.access_token = os.getenv('TWITTER_ACCESS_TOKEN')
+            self.access_token_secret = os.getenv('TWITTER_ACCESS_TOKEN_SECRET')
+            self.bot_name = os.getenv('BOT_NAME', 'Ampy Jr.')
         
         ##
         ## Initialize Twitter API v2 client

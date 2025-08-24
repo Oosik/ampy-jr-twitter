@@ -1,5 +1,6 @@
 #!/bin/bash
 
+ENV=${1:-dev}
 echo "🤖 Starting AMPY Jr. Twitter bot..."
 
 ##
@@ -31,4 +32,4 @@ fi
 ##
 ## Run the bot
 echo "🚀 Starting bot"
-python twitter_bot.py
+python main.py $ENV
