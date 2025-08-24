@@ -6,7 +6,7 @@ from datetime import datetime
 import tweepy
 import schedule
 from dotenv import load_dotenv
-from commands.apy import apy
+from commands import apy
 from utils import is_dev
 
 ##
@@ -91,37 +91,38 @@ class AmpyJr:
             logger.error("Twitter v2 client not initialized")
             return False
         
-        try:
-            ##
-            ## Post the tweet using v2 API
-            apy_result = apy()
-            print(apy_result)
 
-            response = self.client.create_tweet(text='Hello')
-            if response.data:
-                logger.info(f"Tweet posted successfully: {response.data['id']}")
-                return True
-            else:
-                logger.error("Tweet response didn't contain data")
-                return False
+        apy_result = apy()
+        print(apy_result)
+        
+        # try:
+        #     ##
+        #     ## Post the tweet using v2 API
+        #     response = self.client.create_tweet(text='Hello')
+        #     if response.data:
+        #         logger.info(f"Tweet posted successfully: {response.data['id']}")
+        #         return True
+        #     else:
+        #         logger.error("Tweet response didn't contain data")
+        #         return False
             
-        except tweepy.errors.Forbidden as e:
-            if "453" in str(e):
-                logger.error("❌ Twitter API Error 453: Your API access level doesn't include posting tweets")
-                logger.error("You need 'Elevated' or 'Enterprise' access to post tweets")
-                logger.error("Visit: https://developer.twitter.com/en/portal/products")
-            else:
-                logger.error(f"❌ Twitter API Forbidden Error: {e}")
-            return False
+        # except tweepy.errors.Forbidden as e:
+        #     if "453" in str(e):
+        #         logger.error("❌ Twitter API Error 453: Your API access level doesn't include posting tweets")
+        #         logger.error("You need 'Elevated' or 'Enterprise' access to post tweets")
+        #         logger.error("Visit: https://developer.twitter.com/en/portal/products")
+        #     else:
+        #         logger.error(f"❌ Twitter API Forbidden Error: {e}")
+        #     return False
             
-        except tweepy.errors.Unauthorized as e:
-            logger.error(f"❌ Twitter API Unauthorized: {e}")
-            logger.error("Check your API credentials in the .env file")
-            return False
+        # except tweepy.errors.Unauthorized as e:
+        #     logger.error(f"❌ Twitter API Unauthorized: {e}")
+        #     logger.error("Check your API credentials in the .env file")
+        #     return False
             
-        except Exception as e:
-            logger.error(f"❌ Unexpected error posting tweet: {e}")
-            return False
+        # except Exception as e:
+        #     logger.error(f"❌ Unexpected error posting tweet: {e}")
+        #     return False
 
 
 def main():
