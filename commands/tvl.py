@@ -1,6 +1,8 @@
 from utils import run_curl
-from utils.helpers import get_alchemy_key, get_etherscan_key, human_readable
+from utils.helpers import get_alchemy_key, get_etherscan_key, human_readable, is_dev, get_env
 from web3 import Web3
+import mysql.connector
+from datetime import datetime
 
 
 def tvl():
@@ -65,7 +67,27 @@ def tvl():
 
     amp_address = Web3.to_checksum_address(amp_contract)
 
+    if is_dev():
+        conn = mysql.connector.connect(
+            host = get_env('DEV_DB_HOST'),
+            database = get_env('DEV_DB_NAME'),
+            user = get_env('DEV_DB_USER'),
+            password = get_env('DEV_DB_PASS')
+        )
+    else:
+        conn = mysql.connector.connect(
+            host = get_env('DB_HOST'),
+            database = get_env('DB_NAME'),
+            user = get_env('DB_USER'),
+            password = get_env('DB_PASS')
+        )
+
+    cursor = conn.cursor()
+
+
     return_data = []
+    total_amp_tvl = 0
+    total_usd_tvl = 0
     for pool in pools:
 
         pool_contract = Web3.to_checksum_address(pool[1])
@@ -74,10 +96,38 @@ def tvl():
         ## get list of pools and then loop through
         tvl = contract.functions.accountBalances(pool_contract, amp_address).call()
 
-        return_data.append(pool[0])
-        return_data.append(pool[1])
-        return_data.append(tvl[1])
-        return_data.append(int(round((tvl[1] / 1000000000000000000) * amp_price)))
-        return_data.append('$' + human_readable(int(round(tvl[1] / 1000000000000000000 * amp_price))))
+        pool_data = [
+            pool[0],  # name
+            pool[1],  # contract address
+            tvl[1],   # amp_amount
+            int(round((tvl[1] / 1000000000000000000) * amp_price))  # usd_value
+        ]
+
+        return_data.append(pool_data)
+
+        # return_data.append('$' + human_readable(int(round(tvl[1] / 1000000000000000000 * amp_price))))
+
+        total_amp_tvl += tvl[1]
+        total_usd_tvl += (tvl[1] / 1000000000000000000) * amp_price
+
+
+    cursor.execute('''
+        INSERT INTO totals (amp, usd)
+        VALUES (%s, %s)
+    ''', (total_amp_tvl, total_usd_tvl)
+    )
+    totals_insert_id = cursor.lastrowid
+
+    for pool_data in return_data:
+        cursor.execute('''
+            INSERT INTO tvl (name, contract, amp_total, usd, batch_id)
+            VALUES (%s, %s, %s, %s, %s)
+        ''', (pool_data[0], pool_data[1], pool_data[2], pool_data[3], totals_insert_id)
+        )
+        
+
+    conn.commit()
+    cursor.close()
+    conn.close()
 
     return return_data
