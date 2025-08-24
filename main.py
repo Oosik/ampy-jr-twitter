@@ -6,7 +6,7 @@ from datetime import datetime
 import tweepy
 import schedule
 from dotenv import load_dotenv
-from commands import apy
+from commands import apy, tvl
 from utils import is_dev
 
 ##
@@ -93,7 +93,8 @@ class AmpyJr:
         
 
         apy_result = apy()
-        print(apy_result)
+        tvl_result = tvl()
+        print(tvl_result)
         
         # try:
         #     ##
@@ -126,52 +127,44 @@ class AmpyJr:
 
 
 def main():
-    """Main function to run the bot."""
-    ##
-    ## Check if environment variables are set
-    required_vars = [
-        'TWITTER_API_KEY', 'TWITTER_API_SECRET',
-        'TWITTER_ACCESS_TOKEN', 'TWITTER_ACCESS_TOKEN_SECRET'
-    ]
-    
-    missing_vars = [var for var in required_vars if not os.getenv(var)]
-    if missing_vars:
-        logger.error(f"Missing required environment variables: {missing_vars}")
-        logger.error("Please copy env.example to .env and fill in your Twitter API credentials")
-        return
-    
+    """Main function to run the bot."""   
+
+    apy_result = apy()
+    tvl_result = tvl()
+    print(tvl_result)
+
     ##
     ## Initialize bot
-    bot = AmpyJr()
+    # bot = AmpyJr()
     
-    if not bot.client:
-        logger.error("Bot initialization failed. Exiting.")
-        return
+    # if not bot.client:
+    #     logger.error("Bot initialization failed. Exiting.")
+    #     return
     
     ##
     ## Schedule the bot to tweet every 2 hours
-    schedule.every(2).hours.do(bot.tweet)
+    # schedule.every(2).hours.do(bot.tweet)
     
     ##
     ## Tweet immediately when starting
-    logger.info("Posting initial 'hello' tweet...")
-    if not bot.tweet():
-        logger.error("❌ Failed to post initial tweet. Check the error above.")
-        logger.error("The bot will continue running and try again in 2 hours.")
+    # logger.info("Posting initial 'hello' tweet...")
+    # if not bot.tweet():
+    #     logger.error("❌ Failed to post initial tweet. Check the error above.")
+    #     logger.error("The bot will continue running and try again in 2 hours.")
     
-    logger.info("Bot is running! Will tweet every 2 hours. Press Ctrl+C to stop.")
+    # logger.info("Bot is running! Will tweet every 2 hours. Press Ctrl+C to stop.")
     
-    try:
-        while True:
-            schedule.run_pending()
-            ##
-            ## Check every minute
-            time.sleep(60)
+    # try:
+    #     while True:
+    #         schedule.run_pending()
+    #         ##
+    #         ## Check every minute
+    #         time.sleep(60)
             
-    except KeyboardInterrupt:
-        logger.info("Bot stopped by user")
-    except Exception as e:
-        logger.error(f"Unexpected error: {e}")
+    # except KeyboardInterrupt:
+    #     logger.info("Bot stopped by user")
+    # except Exception as e:
+    #     logger.error(f"Unexpected error: {e}")
 
 
 if __name__ == "__main__":

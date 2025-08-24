@@ -1,4 +1,4 @@
-import sys
+import sys, os
 import requests
 
 def is_dev():
@@ -46,3 +46,77 @@ def run_curl(url, headers=None):
     ## parse the JSON response
     data = response.json()
     return data
+
+def get_alchemy_key():
+    """
+    Retrieves the Alchemy API key from the environment variables.
+
+    Returns
+    -------
+    str
+        The Alchemy API key from the environment variables.
+    """
+    return get_env('ALCHEMY_KEY')
+
+def get_etherscan_key():
+    """
+    Retrieves the Etherscan API key from the environment variables.
+
+    Returns
+    -------
+    str
+        The Etherscan API key from the environment variables.
+    """
+    return get_env('ETHERSCAN_KEY')
+
+def get_env(value):
+    """
+    Retrieves the value of an environment variable.
+
+    Parameters
+    ----------
+    value : str
+        The name of the environment variable to retrieve.
+
+    Returns
+    -------
+    str
+        The value of the environment variable, or None if the variable does not exist.
+    """
+    return os.getenv(value)
+
+
+def human_readable(num):
+    """
+    Convert large numbers to human-readable format with K, M, B suffixes.
+    
+    Parameters
+    ----------
+    num : float
+        The number to convert to human-readable format.
+        
+    Returns
+    -------
+    str
+        A string representation of the number with appropriate suffix.
+        Examples: "100.0B", "2.5M", "50.0K", "123"
+        
+    Examples
+    --------
+    >>> human_readable(1000000000)
+    '1.0B'
+    >>> human_readable(2500000)
+    '2.5M'
+    >>> human_readable(50000)
+    '50.0K'
+    >>> human_readable(123)
+    '123'
+    """
+    if num >= 1e9:
+        return f"{num/1e9:.1f}B"
+    elif num >= 1e6:
+        return f"{num/1e6:.1f}M"
+    elif num >= 1e3:
+        return f"{num/1e3:.1f}K"
+    else:
+        return f"{num:.0f}"
