@@ -6,15 +6,8 @@ from datetime import datetime
 import tweepy
 import schedule
 from dotenv import load_dotenv
-
-
-def is_dev():
-    """
-    Checks if the bot is running in dev mode or not.
-    """
-    if len(sys.argv) > 1 and sys.argv[1] == 'dev':
-        return True
-    return False
+from commands.apy import apy
+from utils import is_dev
 
 ##
 ## Load environment variables
@@ -101,7 +94,10 @@ class AmpyJr:
         try:
             ##
             ## Post the tweet using v2 API
-            response = self.client.create_tweet(text="hello")
+            apy_result = apy()
+            print(apy_result)
+
+            response = self.client.create_tweet(text='Hello')
             if response.data:
                 logger.info(f"Tweet posted successfully: {response.data['id']}")
                 return True
