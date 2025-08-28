@@ -1,4 +1,5 @@
 from .helpers import run_curl, is_dev, get_alchemy_key, get_etherscan_key, get_env, human_readable
+from .database import save_totals, save_tvl, get_saved_totals, get_saved_tvl
 
 __all__ = [
 	'run_curl',
@@ -6,5 +7,9 @@ __all__ = [
 	'get_alchemy_key',
 	'get_etherscan_key',
 	'get_env',
-	'human_readable'
+	'human_readable',
+	'save_totals',
+	'save_tvl',
+	'get_saved_totals',
+	'get_saved_tvl'
 ]

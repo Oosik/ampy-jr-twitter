@@ -7,7 +7,7 @@ import tweepy
 import schedule
 from dotenv import load_dotenv
 from commands import apy, tvl
-from utils import is_dev
+from utils import is_dev, get_saved_totals, get_saved_tvl
 
 ##
 ## Load environment variables
@@ -91,10 +91,7 @@ class AmpyJr:
             logger.error("Twitter v2 client not initialized")
             return False
         
-
-        apy_result = apy()
-        tvl_result = tvl()
-        print(tvl_result)
+        
         
         # try:
         #     ##
@@ -128,10 +125,43 @@ class AmpyJr:
 
 def main():
     """Main function to run the bot."""   
+    ##
+    ## Get the current data
+    ## this will save the data to the database
+    # apy_result = apy()
+    # tvl_result = tvl()
+    
+    # if tvl_result['totals_id'] == None:
+    #     logger.error("Failed to save TVL data. Exiting.")
+    #     return
+    
+    # if tvl_result['tvl_id'] == None:
+    #     logger.error("Failed to save TVL data. Exiting.")
+    #     return
 
-    apy_result = apy()
-    tvl_result = tvl()
-    print(tvl_result)
+    ##
+    ## Get the last two entries so we can compare
+    saved_totals = get_saved_totals()
+    
+    if not saved_totals or len(saved_totals) < 2:
+        logger.error("Insufficient saved totals data. Need at least 2 records to compare.")
+        return
+    
+    ##
+    ## Extract batch IDs for current and previous records
+    current_batch_id = saved_totals[0][0]
+    previous_batch_id = saved_totals[1][0]
+    
+    ##
+    ## Get TVL data for both batches and validate
+    saved_tvl = get_saved_tvl(current_batch_id, previous_batch_id)
+    
+    if not saved_tvl:
+        logger.error("No TVL data found for the specified batch IDs.")
+        return
+
+    print(saved_totals)
+    print(saved_tvl)
 
     ##
     ## Initialize bot
