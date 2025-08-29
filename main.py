@@ -129,7 +129,7 @@ def main():
     ##
     ## Get the current data
     ## this will save the data to the database
-    # apy_result = apy()
+    
     # tvl_result = tvl()
     
     # if tvl_result['totals_id'] == None:
@@ -184,6 +184,52 @@ def main():
     total_amp = f"{human_readable(current_amp)} ({sign}{human_readable(total_amp_change)})"
 
     print(f"Staked AMP: {total_amp}")
+
+    ##
+    ## setup the output array for the image. 
+    apy_result = apy()
+    current_tvl = []
+    for i in range(len(saved_tvl)):
+        if saved_tvl[i][5] == current_batch_id:
+            current_pool_capacity = float(saved_tvl[i][4])
+            current_pool_amp = float(saved_tvl[i][3]) / 1e18
+            
+            ##
+            ## Find matching APY for this pool
+            pool_name = saved_tvl[i][1]
+            pool_apy = 'N/A'
+            
+            for apy_pool in apy_result['data']:
+                if apy_pool['entity']['name'] == pool_name:
+                    apy_short = apy_pool['reward_rate']['7_day']['label']
+                    apy_long = apy_pool['reward_rate']['30_day']['label']
+                    break
+            
+            ##
+            ## Find how many amp from last jawn.
+            previous_pool_amp = 0
+            for j in range(len(saved_tvl)):
+                if saved_tvl[j][5] == previous_batch_id and saved_tvl[j][1] == pool_name:
+                    previous_pool_amp = float(saved_tvl[j][3]) / 1e18
+                    break
+            
+            current_pool_amp_change = abs(current_pool_amp - previous_pool_amp)
+            sign = get_sign(current_pool_amp, previous_pool_amp)
+
+            if current_pool_amp_change == 0:
+                current_pool_amp_change = ''
+                sign = ''
+            else:
+                current_pool_amp_change = f"({sign}{human_readable(current_pool_amp_change)})"
+
+            current_tvl.append([
+                saved_tvl[i][1],
+                apy_long,
+                f"${human_readable(current_pool_capacity)}",
+                f"{human_readable(current_pool_amp)} {current_pool_amp_change}",
+            ])
+
+    print(current_tvl)
 
     ##
     ## Initialize bot

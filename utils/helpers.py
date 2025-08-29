@@ -120,6 +120,11 @@ def human_readable(num):
         result = f"{abs_num:.0f}"
     
     ##
+    ## Remove .0 if it ends with .0
+    if result.endswith('.0B') or result.endswith('.0M') or result.endswith('.0K'):
+        result = result[:-3] + result[-1]
+    
+    ##
     ## Add negative sign if original number was negative
     return f"-{result}" if negative else result
 
