@@ -92,31 +92,43 @@ def human_readable(num):
     
     Parameters
     ----------
-    num : float
+    num : float or decimal.Decimal
         The number to convert to human-readable format.
         
     Returns
     -------
     str
-        A string representation of the number with appropriate suffix.
-        Examples: "100.0B", "2.5M", "50.0K", "123"
-        
-    Examples
-    --------
-    >>> human_readable(1000000000)
-    '1.0B'
-    >>> human_readable(2500000)
-    '2.5M'
-    >>> human_readable(50000)
-    '50.0K'
-    >>> human_readable(123)
-    '123'
+        The number formatted with appropriate suffix (K, M, B) or as-is for smaller values.
     """
-    if num >= 1e9:
-        return f"{num/1e9:.1f}B"
-    elif num >= 1e6:
-        return f"{num/1e6:.1f}M"
-    elif num >= 1e3:
-        return f"{num/1e3:.1f}K"
+    ##
+    ## Convert to float if it's a Decimal
+    if hasattr(num, 'as_tuple'):
+        num = float(num)
+    
+    ##
+    ## Handle negative numbers by preserving the sign
+    negative = num < 0
+    abs_num = abs(num)
+	
+    if abs_num >= 1e9:
+        result = f"{abs_num/1e9:.1f}B"
+    elif abs_num >= 1e6:
+        result = f"{abs_num/1e6:.1f}M"
+    elif abs_num >= 1e3:
+        result = f"{abs_num/1e3:.1f}K"
     else:
-        return f"{num:.0f}"
+        result = f"{abs_num:.0f}"
+    
+    ##
+    ## Add negative sign if original number was negative
+    return f"-{result}" if negative else result
+
+
+def get_sign(a, b):
+	"""
+	Get the sign of the difference between two numbers.
+	"""
+	if a > b:
+		return "+"
+	else:
+		return "-"

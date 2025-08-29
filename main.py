@@ -8,6 +8,7 @@ import schedule
 from dotenv import load_dotenv
 from commands import apy, tvl
 from utils import is_dev, get_saved_totals, get_saved_tvl
+from utils.helpers import human_readable, get_sign
 
 ##
 ## Load environment variables
@@ -160,8 +161,29 @@ def main():
         logger.error("No TVL data found for the specified batch IDs.")
         return
 
-    print(saved_totals)
-    print(saved_tvl)
+    ##
+    ## Calculate the total spending capacity and change.
+    current_spending = float(saved_totals[0][2])
+    previous_spending = float(saved_totals[1][2])
+
+    total_spending_change = abs(current_spending - previous_spending)
+    sign = get_sign(current_spending, previous_spending)
+        
+    total_spending = f"${human_readable(current_spending)} ({sign}{human_readable(total_spending_change)})"
+
+    print(f"Spending Capacity: {total_spending}")
+
+    ##
+    ## staked amp total and change
+    current_amp = float(saved_totals[0][1]) / 1e18
+    previous_amp = float(saved_totals[1][1]) / 1e18
+
+    total_amp_change = abs(current_amp - previous_amp)
+    sign = get_sign(current_amp, previous_amp)
+
+    total_amp = f"{human_readable(current_amp)} ({sign}{human_readable(total_amp_change)})"
+
+    print(f"Staked AMP: {total_amp}")
 
     ##
     ## Initialize bot

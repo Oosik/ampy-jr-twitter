@@ -80,15 +80,15 @@ def tvl():
             pool[0],  # name
             pool[1],  # contract address
             tvl[1],   # amp_amount
-            int(round((tvl[1] / 1000000000000000000) * amp_price))  # usd_value
+            int(round((tvl[1] / 1e18) * amp_price))  # usd_value
         ]
 
         return_data.append(pool_data)
 
-        # return_data.append('$' + human_readable(int(round(tvl[1] / 1000000000000000000 * amp_price))))
+        # return_data.append('$' + human_readable(int(round(tvl[1] / 1e18 * amp_price))))
 
         total_amp_tvl += tvl[1]
-        total_usd_tvl += (tvl[1] / 1000000000000000000) * amp_price
+        total_usd_tvl += (tvl[1] / 1e18) * amp_price
 
 
     insert_totals_id = save_totals(total_amp_tvl, total_usd_tvl)
