@@ -248,9 +248,6 @@ def main():
     ## add rows to table
     for row in current_tvl:
         table.add_row(row)
-    
-    table.sortby = '30D'
-    table.reversesort = True
 
     print(table)
 
