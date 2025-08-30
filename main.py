@@ -2,13 +2,15 @@ import os, sys
 import time
 import logging
 from datetime import datetime
-
+import prettytable as pt
 import tweepy
 import schedule
 from dotenv import load_dotenv
 from commands import apy, tvl
 from utils import is_dev, get_saved_totals, get_saved_tvl
 from utils.helpers import human_readable, get_sign
+from PIL import Image, ImageDraw, ImageFont
+
 
 ##
 ## Load environment variables
@@ -220,16 +222,57 @@ def main():
                 current_pool_amp_change = ''
                 sign = ''
             else:
-                current_pool_amp_change = f"({sign}{human_readable(current_pool_amp_change)})"
+                current_pool_amp_change = f"{sign}{human_readable(current_pool_amp_change)}"
 
             current_tvl.append([
                 saved_tvl[i][1],
                 apy_long,
                 f"${human_readable(current_pool_capacity)}",
-                f"{human_readable(current_pool_amp)} {current_pool_amp_change}",
+                human_readable(current_pool_amp),
+                current_pool_amp_change
             ])
+    ##
+    ## create table
+    ## setup columns and alignment
+    table = pt.PrettyTable(['Pool', '30D', 'USD', 'AMP', 'Change'])
+    table.align['Pool'] = 'l'
+    table.align['30D'] = 'r'
+    table.align['USD'] = 'r'
+    table.align['AMP'] = 'r'
+    table.align['Change'] = 'r'
+    table.padding_width = 1
+    table.header_style = 'upper'
+    
 
-    print(current_tvl)
+    ##
+    ## add rows to table
+    for row in current_tvl:
+        table.add_row(row)
+    
+    table.sortby = '30D'
+    table.reversesort = True
+
+    print(table)
+
+    base_dir = os.path.dirname(__file__)
+    font_path = os.path.join(base_dir, "UbuntuMono-R.ttf")
+        
+    fnt = ImageFont.truetype(os.path.abspath(font_path), 30)
+    
+    ##
+    ## create a blank image that we can measure the text bounding box
+    img = Image.new('RGB', (1000, 1000), color = (255, 255, 255))
+    d = ImageDraw.Draw(img)
+    bbox = d.textbbox((0, 0), f'{table}', font=fnt)
+    
+    ##
+    ## create the final image
+    img = Image.new('RGB', (bbox[2] + 40, bbox[3] + 40), color = (255, 255, 255))
+    d = ImageDraw.Draw(img)
+    d.multiline_text((20, 20), f'{table}', font=fnt, fill=(0, 0, 0))
+
+    img_path = os.path.join(base_dir, f'img/twitter.jpg')
+    img.save(img_path, 'JPEG')
 
     ##
     ## Initialize bot

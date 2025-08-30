@@ -25,6 +25,8 @@ multidict==6.6.4
 mysql-connector-python==9.4.0
 oauthlib==3.3.1
 parsimonious==0.10.0
+pillow==11.3.0
+prettytable==3.16.0
 propcache==0.3.2
 pycryptodome==3.23.0
 pydantic==2.11.7
@@ -42,6 +44,7 @@ types-requests==2.32.4.20250809
 typing-inspection==0.4.1
 typing_extensions==4.14.1
 urllib3==2.5.0
+wcwidth==0.2.13
 web3==7.13.0
 websockets==15.0.1
 yarl==1.20.1
