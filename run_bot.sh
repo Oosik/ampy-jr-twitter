@@ -1,6 +1,6 @@
 #!/bin/bash
 
-ENV=${1:-dev}
+ENV=${1:-}
 echo "🤖 Starting AMPY Jr. Twitter bot..."
 
 ##
