@@ -11,7 +11,7 @@
     "install": "python3 -m venv venv && . venv/bin/activate && pip install -r requirements.txt",
     "make:requirements": "python3 -m venv venv && . venv/bin/activate && pip freeze > requirements.txt",
     "push:production": "yarn run upload:production",
-    "upload:production": "rsync -a --exclude '.git' --exclude '*.log' --exclude 'img' --exclude 'venv' --exclude '__pycache__' --exclude='node_modules' --exclude='yarn.lock' \"$(dotenv -p LOCAL_PATH)\" \"$(dotenv -p SSH_USER)@$(dotenv -p SSH_IP):$(dotenv -p PROD_PATH)\""
+    "upload:production": "rsync -a --exclude '.git' --exclude '*.sql' --exclude '.env' --exclude '*.log' --exclude 'img' --exclude 'venv' --exclude '__pycache__' --exclude='node_modules' --exclude='yarn.lock' \"$(dotenv -p LOCAL_PATH)\" \"$(dotenv -p SSH_USER)@$(dotenv -p SSH_IP):$(dotenv -p PROD_PATH)\""
   },
   "devDependencies": {
     "dotenv-cli": "^10.0.0"
