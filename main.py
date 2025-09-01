@@ -296,6 +296,7 @@ def main():
     
     #
     # Schedule the bot to tweet every 2 hours
+    schedule.every().day.at("00:00").do(bot.tweet)
     schedule.every().day.at("02:00").do(bot.tweet)
     schedule.every().day.at("04:00").do(bot.tweet)
     schedule.every().day.at("06:00").do(bot.tweet)
@@ -307,21 +308,8 @@ def main():
     schedule.every().day.at("18:00").do(bot.tweet)
     schedule.every().day.at("20:00").do(bot.tweet)
     schedule.every().day.at("22:00").do(bot.tweet)
-    schedule.every().day.at("24:00").do(bot.tweet)
    
     logger.info("Bot is running! Will tweet every 2 hours. Press Ctrl+C to stop.")
-    
-    try:
-        while True:
-            schedule.run_pending()
-            ##
-            ## Check every minute
-            time.sleep(60)
-            
-    except KeyboardInterrupt:
-        logger.info("Bot stopped by user")
-    except Exception as e:
-        logger.error(f"Unexpected error: {e}")
 
 
 if __name__ == "__main__":
