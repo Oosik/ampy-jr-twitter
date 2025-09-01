@@ -293,24 +293,15 @@ def main():
     if not bot.client:
         logger.error("Bot initialization failed. Exiting.")
         return
-    
-    #
-    # Schedule the bot to tweet every 2 hours
-    schedule.every().day.at("00:00").do(bot.tweet)
-    schedule.every().day.at("02:00").do(bot.tweet)
-    schedule.every().day.at("04:00").do(bot.tweet)
-    schedule.every().day.at("06:00").do(bot.tweet)
-    schedule.every().day.at("08:00").do(bot.tweet)
-    schedule.every().day.at("10:00").do(bot.tweet)
-    schedule.every().day.at("12:00").do(bot.tweet)
-    schedule.every().day.at("14:00").do(bot.tweet)
-    schedule.every().day.at("16:00").do(bot.tweet)
-    schedule.every().day.at("18:00").do(bot.tweet)
-    schedule.every().day.at("20:00").do(bot.tweet)
-    schedule.every().day.at("22:00").do(bot.tweet)
-   
-    logger.info("Bot is running! Will tweet every 2 hours. Press Ctrl+C to stop.")
 
+    ##
+    ## Tweet immediately when starting
+    logger.info("Posting tweet...")
+    if not bot.tweet():
+        logger.error("❌ Failed to post initial tweet. Check the error above.")
+        return
+    
+    logger.info("Bot completed successfully!")
 
 if __name__ == "__main__":
     main()
