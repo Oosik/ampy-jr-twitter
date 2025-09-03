@@ -1,10 +1,7 @@
-import os, sys
-import time
+import os
 import logging
-from datetime import datetime
 import prettytable as pt
 import tweepy
-import schedule
 from dotenv import load_dotenv
 from commands import apy, tvl
 from utils import is_dev, get_saved_totals, get_saved_tvl
@@ -141,7 +138,7 @@ class AmpyJr:
         sign = get_sign(current_spending, previous_spending)
 
         if total_spending_change == 0:
-            total_spending_change = '0'
+            total_spending_change = 0
             sign = ''
             
         total_spending = f"${human_readable(current_spending)} ({sign}${human_readable(total_spending_change)})"
@@ -157,7 +154,7 @@ class AmpyJr:
         sign = get_sign(current_amp, previous_amp)
 
         if total_amp_change == 0:
-            total_amp_change = '0'
+            total_amp_change = 0
             sign = ''
 
         total_amp = f"{human_readable(current_amp)} ({sign}{human_readable(total_amp_change)})"
@@ -196,7 +193,7 @@ class AmpyJr:
                 sign = get_sign(current_pool_amp, previous_pool_amp)
 
                 if current_pool_amp_change == 0:
-                    current_pool_amp_change = '0'
+                    current_pool_amp_change = 0
                     sign = ''
                 else:
                     current_pool_amp_change = f"{sign}{human_readable(current_pool_amp_change)}"

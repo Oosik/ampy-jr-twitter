@@ -1,6 +1,8 @@
 from utils import run_curl, save_totals, save_tvl
 from utils.helpers import get_alchemy_key, get_etherscan_key
 from web3 import Web3
+import time
+import logging
 
 
 def tvl():
@@ -70,6 +72,8 @@ def tvl():
     total_usd_tvl = 0
     for pool in pools:
 
+        time.sleep(1)
+                
         pool_contract = Web3.to_checksum_address(pool[1])
 
         ##

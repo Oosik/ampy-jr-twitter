@@ -101,6 +101,14 @@ def human_readable(num):
         The number formatted with appropriate suffix (K, M, B) or as-is for smaller values.
     """
     ##
+    ## Convert to float if it's a string
+    if isinstance(num, str):
+        try:
+            num = float(num)
+        except ValueError:
+            return num
+            
+    ##
     ## Convert to float if it's a Decimal
     if hasattr(num, 'as_tuple'):
         num = float(num)
@@ -109,7 +117,7 @@ def human_readable(num):
     ## Handle negative numbers by preserving the sign
     negative = num < 0
     abs_num = abs(num)
-	
+    
     if abs_num >= 1e9:
         result = f"{abs_num/1e9:.1f}B"
     elif abs_num >= 1e6:
@@ -130,10 +138,10 @@ def human_readable(num):
 
 
 def get_sign(a, b):
-	"""
-	Get the sign of the difference between two numbers.
-	"""
-	if a > b:
-		return "+"
-	else:
-		return "-"
+    """
+    Get the sign of the difference between two numbers.
+    """
+    if a > b:
+        return "+"
+    else:
+        return "-"
