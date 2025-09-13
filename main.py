@@ -4,7 +4,7 @@ import prettytable as pt
 import tweepy
 from dotenv import load_dotenv
 from commands import apy, tvl
-from utils import is_dev, get_saved_totals, get_saved_tvl
+from utils import is_dev, get_saved_totals, get_saved_tvl, get_price
 from utils.helpers import human_readable, get_sign
 from PIL import Image, ImageDraw, ImageFont
 
@@ -133,15 +133,8 @@ class AmpyJr:
         ## Calculate the total spending capacity and change.
         current_spending = float(saved_totals[0][2])
         previous_spending = float(saved_totals[1][2])
-
-        total_spending_change = abs(current_spending - previous_spending)
-        sign = get_sign(current_spending, previous_spending)
-
-        if total_spending_change == 0:
-            total_spending_change = 0
-            sign = ''
             
-        total_spending = f"${human_readable(current_spending)} ({sign}${human_readable(total_spending_change)})"
+        total_spending = f"${human_readable(current_spending)}"
 
         tweet_text += f"Spending Capacity: {total_spending}\n"
 
@@ -157,7 +150,13 @@ class AmpyJr:
             total_amp_change = 0
             sign = ''
 
-        total_amp = f"{human_readable(current_amp)} ({sign}{human_readable(total_amp_change)})"
+        amp_price = get_price()
+
+        if amp_price == None:
+            logger.error("Failed to get AMP price. Exiting.")
+            return
+
+        total_amp = f"{human_readable(current_amp)} ({sign}{human_readable(total_amp_change)} AMP, ${human_readable(total_amp_change * amp_price)} USD)"
 
         tweet_text += f"Staked AMP: {total_amp}\n"
 
