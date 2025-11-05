@@ -175,7 +175,12 @@ class AmpyJr:
                 pool_apy = 'N/A'
                 
                 for apy_pool in apy_result['data']:
-                    if apy_pool['entity']['name'] == pool_name:
+                    apy_pool_name = apy_pool['entity']['name']
+                    
+                    if 'wallet' in apy_pool_name.lower():
+                        apy_pool_name = apy_pool_name.replace('Wallet', '').replace('wallet', '').strip()
+                    
+                    if apy_pool_name == pool_name:
                         apy_short = apy_pool['reward_rate']['7_day']['label']
                         apy_long = apy_pool['reward_rate']['30_day']['label']
                         break
