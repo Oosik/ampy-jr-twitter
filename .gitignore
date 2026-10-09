@@ -4,4 +4,5 @@ __pycache__/
 *.log
 node_modules/
 database.sql
+docker/mysql/init/*.sql
 img/*

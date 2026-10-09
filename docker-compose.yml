@@ -1,0 +1,22 @@
+name: ampy-jr-twitter
+
+services:
+  db:
+    image: mariadb:10.11
+    container_name: ampy-jr-twitter-db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: amp_twitter
+      MYSQL_USER: ampy
+      MYSQL_PASSWORD: ampy
+      MYSQL_ROOT_PASSWORD: ampyroot
+    ports:
+      ##
+      ## 3307 on the host so it doesn't clash with a locally installed MySQL on 3306
+      - "127.0.0.1:3307:3306"
+    volumes:
+      - ampy_db_data:/var/lib/mysql
+      - ./docker/mysql/init:/docker-entrypoint-initdb.d:ro
+
+volumes:
+  ampy_db_data:
