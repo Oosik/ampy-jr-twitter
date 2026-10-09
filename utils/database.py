@@ -1,3 +1,4 @@
+import os
 import mysql.connector
 from utils import is_dev, get_env
 
@@ -8,6 +9,7 @@ def get_db_connection():
     if is_dev():
         conn = mysql.connector.connect(
             host = get_env('DEV_DB_HOST'),
+            port = int(os.getenv('DEV_DB_PORT') or 3306),
             database = get_env('DEV_DB_NAME'),
             user = get_env('DEV_DB_USER'),
             password = get_env('DEV_DB_PASS')
@@ -15,6 +17,7 @@ def get_db_connection():
     else:
         conn = mysql.connector.connect(
             host = get_env('DB_HOST'),
+            port = int(os.getenv('DB_PORT') or 3306),
             database = get_env('DB_NAME'),
             user = get_env('DB_USER'),
             password = get_env('DB_PASS')

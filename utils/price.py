@@ -1,9 +1,9 @@
 from utils import run_curl
 
 def get_price():
-	##
-    ## get the price from pyth so it's closer to the value on app.flexa.co
-    url = 'https://hermes.pyth.network/v2/updates/price/latest?ids[]=0xd37e4513ebe235fff81e453d400debaf9a49a5df2b7faa11b3831d35d7e72cb7'
+    ##
+    ## get AMP/USD from CoinGecko
+    url = 'https://api.coingecko.com/api/v3/simple/price?ids=amp-token&vs_currencies=usd'
     
     ##
     ## attempt to get data from API
@@ -13,6 +13,9 @@ def get_price():
     if 'Status' in data and data['Status'] == 'Error':
         return data['Message']
 
-    amp_price = int(data['parsed'][0]['price']['price']) / (10 ** abs(data['parsed'][0]['price']['expo']))
+    try:
+        amp_price = float(data['amp-token']['usd'])
+    except (KeyError, TypeError, ValueError):
+        return 'Error: unexpected CoinGecko price response. Please alert an admin.'
 
     return amp_price
